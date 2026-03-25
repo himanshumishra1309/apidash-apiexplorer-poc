@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Swagger Petstore",
+    "url": "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/examples/v3.0/petstore.json"
+  },
+  {
+    "name": "USPTO Data API",
+    "url": "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/examples/v3.0/uspto.yaml"
+  },
+  {
+    "name": "Broken Community API",
+    "url": "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/examples/v3.0/this-file-is-missing.json"
+  }
+]
