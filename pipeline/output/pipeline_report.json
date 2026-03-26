@@ -1,34 +1,34 @@
 [
   {
     "name": "Open Meteo Weather API",
-    "error": "Network Error or 404"
+    "error": "404 Client Error: Not Found for url: https://api.open-meteo.com/v1/openapi.json"
   },
   {
     "name": "NASA APIs (Science)",
-    "error": "Network Error or 404"
+    "error": "404 Client Error: Not Found for url: https://api.nasa.gov/openapi.json"
   },
   {
     "name": "OpenAI API",
-    "error": "Network Error or 404"
+    "error": "404 Client Error: Not Found for url: https://raw.githubusercontent.com/openai/openai-openapi/master/openapi.yaml"
   },
   {
     "name": "API without servers field",
-    "error": "Network Error or 404"
+    "error": "404 Client Error: Not Found for url: https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/examples/v3.0/petstore.yaml"
   },
   {
     "name": "Invalid URL API",
-    "error": "Network Error or 404"
+    "error": "HTTPSConnectionPool(host='invalid-api-example-1234.com', port=443): Max retries exceeded with url: /openapi.json (Caused by NameResolutionError(\"HTTPSConnection(host='invalid-api-example-1234.com', port=443): Failed to resolve 'invalid-api-example-1234.com' ([Errno -2] Name or service not known)\"))"
   },
   {
     "name": "404 API Test",
-    "error": "Network Error or 404"
+    "error": "404 Client Error: Not Found for url: https://api.github.com/nonexistent/openapi.json"
   },
   {
     "name": "Not an OpenAPI (Random JSON)",
-    "error": "Validation Failed: Missing 'paths' object."
+    "error": "Missing 'paths' object."
   },
   {
     "name": "Malformed YAML",
-    "error": "Network Error or 404"
+    "error": "404 Client Error: Not Found for url: https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/examples/v2.0/json/invalid.json"
   }
 ]
