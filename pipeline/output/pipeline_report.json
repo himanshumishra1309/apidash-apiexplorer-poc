@@ -1,14 +1,34 @@
 [
   {
-    "name": "Open-Meteo Weather API",
+    "name": "Open Meteo Weather API",
     "error": "Network Error or 404"
   },
   {
-    "name": "Coinbase Digital Currency API",
+    "name": "NASA APIs (Science)",
     "error": "Network Error or 404"
   },
   {
-    "name": "Broken Community API (To test fault-tolerance)",
+    "name": "OpenAI API",
+    "error": "Network Error or 404"
+  },
+  {
+    "name": "API without servers field",
+    "error": "Network Error or 404"
+  },
+  {
+    "name": "Invalid URL API",
+    "error": "Network Error or 404"
+  },
+  {
+    "name": "404 API Test",
+    "error": "Network Error or 404"
+  },
+  {
+    "name": "Not an OpenAPI (Random JSON)",
+    "error": "Validation Failed: Missing 'paths' object."
+  },
+  {
+    "name": "Malformed YAML",
     "error": "Network Error or 404"
   }
 ]
