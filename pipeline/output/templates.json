@@ -1,0 +1,18 @@
+[
+  {
+    "name": "NASA Astronomy Picture of the Day",
+    "title": "APOD",
+    "tags": [
+      "General"
+    ],
+    "base_url": "https://api.nasa.gov/planetary",
+    "endpoints_count": 1,
+    "endpoints": [
+      {
+        "method": "GET",
+        "path": "/apod",
+        "summary": "Returns images"
+      }
+    ]
+  }
+]

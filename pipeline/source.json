@@ -1,14 +1,18 @@
 [
   {
-    "name": "Swagger Petstore",
-    "url": "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/examples/v3.0/petstore.json"
+    "name": "Open-Meteo Weather API",
+    "url": "https://raw.githubusercontent.com/open-meteo/open-meteo/main/openapi.yml"
   },
   {
-    "name": "USPTO Data API",
-    "url": "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/examples/v3.0/uspto.yaml"
+    "name": "Coinbase Digital Currency API",
+    "url": "https://api.apis.guru/v2/specs/coinbase.com/2.0.0/openapi.json"
   },
   {
-    "name": "Broken Community API",
-    "url": "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/examples/v3.0/this-file-is-missing.json"
+    "name": "NASA Astronomy Picture of the Day",
+    "url": "https://api.apis.guru/v2/specs/nasa.gov/apod/1.0.0/openapi.yaml"
+  },
+  {
+    "name": "Broken Community API (To test fault-tolerance)",
+    "url": "https://raw.githubusercontent.com/this-does-not-exist.json"
   }
 ]

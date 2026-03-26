@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Open-Meteo Weather API",
+    "error": "Network Error or 404"
+  },
+  {
+    "name": "Coinbase Digital Currency API",
+    "error": "Network Error or 404"
+  },
+  {
+    "name": "Broken Community API (To test fault-tolerance)",
+    "error": "Network Error or 404"
+  }
+]
