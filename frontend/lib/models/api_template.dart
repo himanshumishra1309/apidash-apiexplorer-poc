@@ -4,6 +4,7 @@ class ApiTemplate {
   final String baseUrl;
   final Map<String, dynamic> globalAuthMethods;
   final int endpointsCount;
+  final CommunityScore communityScore;
   final List<ApiEndpoint> endpoints;
 
   ApiTemplate({
@@ -12,6 +13,7 @@ class ApiTemplate {
     required this.baseUrl,
     required this.globalAuthMethods,
     required this.endpointsCount,
+    required this.communityScore,
     required this.endpoints,
   });
 
@@ -41,6 +43,8 @@ class ApiTemplate {
           (json['global_auth_methods'] as Map?)?.cast<String, dynamic>() ??
               const {},
       endpointsCount: json['endpoints_count'] ?? 0,
+      communityScore: CommunityScore.fromJson(
+          (json['community_score'] as Map?)?.cast<String, dynamic>() ?? {}),
       endpoints: endpointList
           .whereType<Map>()
           .map((e) => ApiEndpoint.fromJson(e.cast<String, dynamic>()))
@@ -126,6 +130,59 @@ class ApiParameter {
       name: json['name']?.toString() ?? '',
       type: json['type']?.toString() ?? 'unknown',
       required: json['required'] == true,
+    );
+  }
+}
+
+class CommunityScore {
+  final int issueUpvotes;
+  final int totalComments;
+  final int commentUpvotes;
+  final int overallPopularityScore;
+  final List<CommentInteraction> interactions;
+
+  const CommunityScore({
+    required this.issueUpvotes,
+    required this.totalComments,
+    required this.commentUpvotes,
+    required this.overallPopularityScore,
+    required this.interactions,
+  });
+
+  factory CommunityScore.fromJson(Map<String, dynamic> json) {
+    final interactionsRaw = json['interactions'] as List? ?? [];
+    return CommunityScore(
+      issueUpvotes: json['issue_upvotes'] ?? 0,
+      totalComments: json['total_comments'] ?? 0,
+      commentUpvotes: json['comment_upvotes'] ?? 0,
+      overallPopularityScore: json['overall_popularity_score'] ?? 0,
+      interactions: interactionsRaw
+          .whereType<Map>()
+          .map((e) => CommentInteraction.fromJson(e.cast<String, dynamic>()))
+          .toList(),
+    );
+  }
+}
+
+class CommentInteraction {
+  final String user;
+  final String body;
+  final int upvotes;
+  final DateTime createdAt;
+
+  const CommentInteraction({
+    required this.user,
+    required this.body,
+    required this.upvotes,
+    required this.createdAt,
+  });
+
+  factory CommentInteraction.fromJson(Map<String, dynamic> json) {
+    return CommentInteraction(
+      user: json['user'] ?? '',
+      body: json['body'] ?? '',
+      upvotes: json['upvotes'] ?? 0,
+      createdAt: DateTime.tryParse(json['created_at'] ?? '') ?? DateTime(1970),
     );
   }
 }
