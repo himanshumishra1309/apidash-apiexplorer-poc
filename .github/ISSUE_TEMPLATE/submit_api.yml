@@ -1,0 +1,21 @@
+name: 🚀 Submit a new API
+description: Want an API added to the API Explorer? Submit it here!
+title: "[API]: "
+labels: ["community-api", "pending-validation"]
+body:
+  - type: input
+    id: api_name
+    attributes:
+      label: API Name
+      description: What is the name of the API? (e.g., Cat Facts API)
+      placeholder: "Enter API Name"
+    validations:
+      required: true
+  - type: input
+    id: openapi_url
+    attributes:
+      label: Raw OpenAPI URL
+      description: Must be a direct link to a raw JSON or YAML file (NOT an HTML docs page).
+      placeholder: "https://raw.githubusercontent.com/.../openapi.json"
+    validations:
+      required: true
