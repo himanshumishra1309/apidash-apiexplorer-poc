@@ -43,10 +43,5 @@
     "name": "Reddit API",
     "url": "https://api.apis.guru/v2/specs/reddit.com/2.5.0/openapi.json",
     "error": "404 Client Error: Not Found for url: https://api.apis.guru/v2/specs/reddit.com/2.5.0/openapi.json"
-  },
-  {
-    "name": "Twilio API",
-    "url": "https://api.apis.guru/v2/specs/twilio.com/api/1.201.0/openapi.json",
-    "error": "404 Client Error: Not Found for url: https://api.apis.guru/v2/specs/twilio.com/api/1.201.0/openapi.json"
   }
 ]
