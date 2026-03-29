@@ -18,10 +18,25 @@ class ApiTemplate {
   factory ApiTemplate.fromJson(Map<String, dynamic> json) {
     final endpointList = json['endpoints'] as List? ?? const [];
 
+    String baseUrl = json['base_url'] ?? '';
+    final String originalUrl = json['_original_url'] ?? '';
+
+    // If the base_url is a relative path (e.g. "/api/v3"), try to prepend the domain from _original_url
+    if (baseUrl.startsWith('/') && originalUrl.startsWith('http')) {
+      try {
+        final uri = Uri.parse(originalUrl);
+        // Extract scheme and host, e.g., 'https://petstore.swagger.io'
+        final domain = '${uri.scheme}://${uri.host}';
+        baseUrl = '$domain$baseUrl';
+      } catch (_) {
+        // ignore errors and fallback to original
+      }
+    }
+
     return ApiTemplate(
       name: json['name'] ?? '',
       tags: List<String>.from(json['tags'] ?? []),
-      baseUrl: json['base_url'] ?? '',
+      baseUrl: baseUrl,
       globalAuthMethods:
           (json['global_auth_methods'] as Map?)?.cast<String, dynamic>() ??
               const {},

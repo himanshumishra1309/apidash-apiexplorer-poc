@@ -4,7 +4,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import '../models/api_template.dart';
-import 'api_details.dart';
+import 'api_overview.dart';
+import 'endpoint_details.dart';
 
 class ApiExplorerScreen extends StatefulWidget {
   const ApiExplorerScreen({super.key});
@@ -17,8 +18,9 @@ class _ApiExplorerScreenState extends State<ApiExplorerScreen> {
   List<ApiTemplate> _templates = [];
   bool _isLoading = true;
   String? _errorMessage;
-  String _searchQuery = '';
-  ApiTemplate? _selectedTemplate;
+
+  ApiTemplate? _selectedApi;
+  ApiEndpoint? _selectedEndpoint;
 
   @override
   void initState() {
@@ -35,7 +37,7 @@ class _ApiExplorerScreenState extends State<ApiExplorerScreen> {
       if (!await file.exists()) {
         setState(() {
           _isLoading = false;
-          _errorMessage = 'templates.json not found at ${file.path}';
+          _errorMessage = 'templates.json not found check path';
         });
         return;
       }
@@ -43,20 +45,14 @@ class _ApiExplorerScreenState extends State<ApiExplorerScreen> {
       final jsonString = await file.readAsString();
       final decoded = json.decode(jsonString);
       if (decoded is! List) {
-        throw const FormatException('templates.json must be a JSON array.');
+        throw const FormatException('Expected JSON array');
       }
 
-      final parsedTemplates = decoded
-          .whereType<Map>()
-          .map((e) => ApiTemplate.fromJson(e.cast<String, dynamic>()))
-          .toList();
-
       setState(() {
-        _templates = parsedTemplates;
+        _templates = decoded
+            .map((e) => ApiTemplate.fromJson(e as Map<String, dynamic>))
+            .toList();
         _isLoading = false;
-        _errorMessage = null;
-        _selectedTemplate =
-            parsedTemplates.isEmpty ? null : parsedTemplates.first;
       });
     } catch (e) {
       setState(() {
@@ -66,121 +62,190 @@ class _ApiExplorerScreenState extends State<ApiExplorerScreen> {
     }
   }
 
+  Map<String, List<ApiTemplate>> get _categoryMap {
+    final map = <String, List<ApiTemplate>>{};
+    for (final template in _templates) {
+      List<String> categories =
+          template.tags.isEmpty ? ['Uncategorized'] : List.from(template.tags);
+
+      // Temporary frontend override based on API name to separate into proper categories
+      final nameLower = template.name.toLowerCase();
+      if (nameLower.contains('finance')) {
+        categories.remove('General');
+        if (!categories.contains('Finance')) categories.add('Finance');
+      } else if (nameLower.contains('science')) {
+        categories.remove('General');
+        if (!categories.contains('Science')) categories.add('Science');
+      } else if (nameLower.contains('github') ||
+          nameLower.contains('kubernetes')) {
+        categories.remove('General');
+        if (!categories.contains('Developer Tools'))
+          categories.add('Developer Tools');
+      }
+
+      if (categories.isEmpty) categories = ['General'];
+
+      for (final cat in categories) {
+        map.putIfAbsent(cat, () => []).add(template);
+      }
+    }
+    return map;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
-
     if (_errorMessage != null) {
-      return Scaffold(
-        appBar: AppBar(title: const Text('API Explorer')),
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Text(
-              _errorMessage!,
-              style: const TextStyle(color: Colors.redAccent),
-            ),
-          ),
-        ),
-      );
+      return Scaffold(body: Center(child: Text(_errorMessage!)));
     }
-
-    final query = _searchQuery.toLowerCase().trim();
-    final filteredTemplates = _templates.where((t) {
-      if (query.isEmpty) return true;
-      final inName = t.name.toLowerCase().contains(query);
-      final inTags = t.tags.any((tag) => tag.toLowerCase().contains(query));
-      final inBaseUrl = t.baseUrl.toLowerCase().contains(query);
-      return inName || inTags || inBaseUrl;
-    }).toList();
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('API Explorer (${_templates.length})'),
-        centerTitle: false,
+        title: const Text('API Explorer'),
+        elevation: 1,
       ),
       body: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SizedBox(
-            width: 360,
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Search name, tags, base URL...',
-                      prefixIcon: const Icon(Icons.search),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      isDense: true,
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        _searchQuery = value;
-                      });
-                    },
-                  ),
-                ),
-                Expanded(
-                  child: filteredTemplates.isEmpty
-                      ? const Center(
-                          child: Text('No APIs matched your search.'))
-                      : ListView.builder(
-                          itemCount: filteredTemplates.length,
-                          itemBuilder: (context, index) {
-                            final template = filteredTemplates[index];
-                            final isSelected = _selectedTemplate == template;
-                            final tagsLabel = template.tags.isEmpty
-                                ? 'No tags'
-                                : template.tags.join(', ');
+          _buildSidebar(),
+          const VerticalDivider(width: 1, thickness: 1),
+          Expanded(child: _buildMainArea()),
+        ],
+      ),
+    );
+  }
 
-                            return ListTile(
-                              selected: isSelected,
-                              selectedTileColor: Theme.of(context)
-                                  .colorScheme
-                                  .primaryContainer
-                                  .withValues(alpha: 0.3),
-                              title: Text(
-                                template.name,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              subtitle: Text(
-                                '${template.endpointsCount} endpoints • $tagsLabel',
-                                style: const TextStyle(fontSize: 12),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              trailing: template.globalAuthMethods.isNotEmpty
-                                  ? const Icon(Icons.verified_user_outlined,
-                                      size: 18)
-                                  : null,
-                              onTap: () {
-                                setState(() {
-                                  _selectedTemplate = template;
-                                });
-                              },
-                            );
-                          },
-                        ),
-                ),
-              ],
-            ),
+  Widget _buildSidebar() {
+    return SizedBox(
+      width: 250,
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16),
+            alignment: Alignment.centerLeft,
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
+            child: const Text('Collections',
+                style: TextStyle(fontWeight: FontWeight.bold)),
           ),
-          const VerticalDivider(width: 1),
           Expanded(
-            child: _selectedTemplate == null
-                ? const Center(child: Text('Select an API to explore.'))
-                : ApiDetailsView(template: _selectedTemplate!),
+            child: ListView(
+              children: _categoryMap.entries.map((entry) {
+                return ExpansionTile(
+                  title: Text('${entry.key} (${entry.value.length})'),
+                  children: entry.value.map((api) {
+                    return ListTile(
+                      title:
+                          Text(api.name, style: const TextStyle(fontSize: 14)),
+                      subtitle: Text(api.baseUrl,
+                          style: const TextStyle(fontSize: 10)),
+                      onTap: () {
+                        setState(() {
+                          _selectedApi = api;
+                          _selectedEndpoint = null;
+                        });
+                      },
+                      selected:
+                          _selectedApi == api && _selectedEndpoint == null,
+                    );
+                  }).toList(),
+                );
+              }).toList(),
+            ),
           ),
         ],
       ),
     );
+  }
+
+  Widget _buildMainArea() {
+    if (_selectedApi == null) {
+      return const Center(child: Text('Select an API from the sidebar'));
+    }
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Middle Pane: Endpoints of the selected API
+        SizedBox(
+          width: 250,
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                alignment: Alignment.centerLeft,
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                child: Text(_selectedApi!.name,
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
+              ),
+              ListTile(
+                title: const Text('Overview / Configuration'),
+                leading: const Icon(Icons.info_outline),
+                selected: _selectedEndpoint == null,
+                onTap: () {
+                  setState(() {
+                    _selectedEndpoint = null;
+                  });
+                },
+              ),
+              const Divider(height: 1),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: _selectedApi!.endpoints.length,
+                  itemBuilder: (context, index) {
+                    final ep = _selectedApi!.endpoints[index];
+                    return ListTile(
+                      title: Text(ep.path,
+                          style: const TextStyle(
+                              fontSize: 13, fontFamily: 'monospace')),
+                      leading: Text(
+                        ep.method.toUpperCase(),
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          color: _methodColor(ep.method),
+                        ),
+                      ),
+                      selected: _selectedEndpoint == ep,
+                      onTap: () {
+                        setState(() {
+                          _selectedEndpoint = ep;
+                        });
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+        const VerticalDivider(width: 1, thickness: 1),
+        // Right Pane: Details
+        Expanded(
+          child: _selectedEndpoint == null
+              ? ApiOverviewScreen(template: _selectedApi!)
+              : EndpointDetailsScreen(
+                  template: _selectedApi!, endpoint: _selectedEndpoint!),
+        ),
+      ],
+    );
+  }
+
+  Color _methodColor(String method) {
+    switch (method.toUpperCase()) {
+      case 'GET':
+        return Colors.green;
+      case 'POST':
+        return Colors.orange;
+      case 'PUT':
+        return Colors.blue;
+      case 'DELETE':
+        return Colors.red;
+      case 'PATCH':
+        return Colors.purple;
+      default:
+        return Colors.grey;
+    }
   }
 }
