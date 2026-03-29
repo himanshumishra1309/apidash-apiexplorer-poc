@@ -18,7 +18,8 @@ class ApiOverviewScreen extends StatelessWidget {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: Colors.blue.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(20),
@@ -26,16 +27,19 @@ class ApiOverviewScreen extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.thumb_up_alt_outlined, size: 16, color: Colors.blue),
+                    const Icon(Icons.thumb_up_alt_outlined,
+                        size: 16, color: Colors.blue),
                     const SizedBox(width: 6),
                     Text('${template.communityScore.issueUpvotes} Likes',
-                        style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.blue)),
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.blue)),
                   ],
                 ),
               ),
               const SizedBox(width: 12),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: Colors.purple.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(20),
@@ -43,10 +47,12 @@ class ApiOverviewScreen extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.comment_outlined, size: 16, color: Colors.purple),
+                    const Icon(Icons.comment_outlined,
+                        size: 16, color: Colors.purple),
                     const SizedBox(width: 6),
                     Text('${template.communityScore.totalComments} Comments',
-                        style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.purple)),
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.purple)),
                   ],
                 ),
               ),
@@ -55,7 +61,8 @@ class ApiOverviewScreen extends StatelessWidget {
           const SizedBox(height: 16),
 
           if (template.communityScore.interactions.isNotEmpty) ...[
-            Text('Recent Comments', style: Theme.of(context).textTheme.titleMedium),
+            Text('Recent Comments',
+                style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 8),
             Container(
               constraints: const BoxConstraints(maxHeight: 180),
@@ -69,22 +76,27 @@ class ApiOverviewScreen extends StatelessWidget {
                     dense: true,
                     leading: CircleAvatar(
                       radius: 16,
-                      child: Text(comment.user.isNotEmpty ? comment.user[0].toUpperCase() : '?'),
+                      child: Text(comment.user.isNotEmpty
+                          ? comment.user[0].toUpperCase()
+                          : '?'),
                     ),
-                    title: Text(comment.user, style: const TextStyle(fontWeight: FontWeight.bold)),
+                    title: Text(comment.user,
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(comment.body),
                         Row(
                           children: [
-                            const Icon(Icons.thumb_up_alt_outlined, size: 14, color: Colors.blue),
+                            const Icon(Icons.thumb_up_alt_outlined,
+                                size: 14, color: Colors.blue),
                             const SizedBox(width: 4),
                             Text('${comment.upvotes}'),
                             const SizedBox(width: 12),
                             Text(
                               '${comment.createdAt.year}-${comment.createdAt.month.toString().padLeft(2, '0')}-${comment.createdAt.day.toString().padLeft(2, '0')} ${comment.createdAt.hour.toString().padLeft(2, '0')}:${comment.createdAt.minute.toString().padLeft(2, '0')}',
-                              style: const TextStyle(fontSize: 11, color: Colors.grey),
+                              style: const TextStyle(
+                                  fontSize: 11, color: Colors.grey),
                             ),
                           ],
                         ),
