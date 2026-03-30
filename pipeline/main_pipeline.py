@@ -40,7 +40,17 @@ def main():
             # This overwrites the old JSON with the newly formatted one.
             # If an API failed to fetch in this run, it won't be in `new_templates`,
             # thereby keeping the historical data perfectly safe in the dictionary!
-            merged_templates_dict[url] = t
+            if url in merged_templates_dict:
+                old_data = merged_templates_dict[url]
+
+                # Preserve dynamic fields
+                t["community_score"] = old_data.get("community_score", {})
+
+                # You can preserve more fields here if needed
+
+                merged_templates_dict[url] = t
+            else:
+                merged_templates_dict[url] = t
 
     # Convert the dictionary map back into a flat JSON list
     final_templates_list = list(merged_templates_dict.values())
