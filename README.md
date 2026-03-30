@@ -114,7 +114,7 @@ Please evaluate this as a **proof of concept**, not a production-ready system.
 - Generates:
   - `templates.json` (valid APIs)
   - `pipeline_report.json` (failed APIs)
-- Designed to run every **6 hours**
+- **Intended to run automatically every 6 hours** (e.g., via cron job; not yet applied, but this is the intended schedule)
 
 ---
 
@@ -126,11 +126,12 @@ Please evaluate this as a **proof of concept**, not a production-ready system.
 - Updates:
   - Popularity scores
   - Community feedback
-- Designed to run every **1 hour**
+- **Intended to run automatically every 1 hour** (e.g., via cron job; not yet applied, but this is the intended schedule)
 
 ---
 
 ## 🔁 Pipeline Flow
+> **Note:** The main pipeline is designed to run every 6 hours, and the fetch_fast_sync script (for likes, reactions, and comments) is designed to run every 1 hour. While cron jobs are not yet set up, this is the intended automation schedule for production.
 
 1. Load API sources (local + GitHub)
 2. Fetch OpenAPI specifications
