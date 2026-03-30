@@ -394,6 +394,3 @@ This PoC validates that:
 - OpenAPI specs can be reliably processed
 - GitHub can act as a data + feedback backend
 - API Explorer can be built without traditional infrastructure
-# API Dash Explorer
-
-API Dash Explorer is a cross-platform desktop application and data pipeline for exploring, visualizing, and interacting with public APIs. It is inspired by tools like Postman, but focused on API discovery, documentation, and community engagement.
